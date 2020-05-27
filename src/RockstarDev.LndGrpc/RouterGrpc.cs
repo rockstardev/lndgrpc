@@ -90,6 +90,121 @@ namespace Routerrpc {
       get { return global::Routerrpc.RouterReflection.Descriptor.Services[0]; }
     }
 
+    /// <summary>Base class for server-side implementations of Router</summary>
+    [grpc::BindServiceMethod(typeof(Router), "BindService")]
+    public abstract partial class RouterBase
+    {
+      /// <summary>
+      ///*
+      ///SendPayment attempts to route a payment described by the passed
+      ///PaymentRequest to the final destination. The call returns a stream of
+      ///payment status updates.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SendPayment(global::Routerrpc.SendPaymentRequest request, grpc::IServerStreamWriter<global::Routerrpc.PaymentStatus> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///TrackPayment returns an update stream for the payment identified by the
+      ///payment hash.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task TrackPayment(global::Routerrpc.TrackPaymentRequest request, grpc::IServerStreamWriter<global::Routerrpc.PaymentStatus> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///EstimateRouteFee allows callers to obtain a lower bound w.r.t how much it
+      ///may cost to send an HTLC to the target end destination.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Routerrpc.RouteFeeResponse> EstimateRouteFee(global::Routerrpc.RouteFeeRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SendToRoute attempts to make a payment via the specified route. This method
+      ///differs from SendPayment in that it allows users to specify a full route
+      ///manually. This can be used for things like rebalancing, and atomic swaps.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Routerrpc.SendToRouteResponse> SendToRoute(global::Routerrpc.SendToRouteRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///ResetMissionControl clears all mission control state and starts with a clean
+      ///slate.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Routerrpc.ResetMissionControlResponse> ResetMissionControl(global::Routerrpc.ResetMissionControlRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///QueryMissionControl exposes the internal mission control state to callers.
+      ///It is a development feature.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Routerrpc.QueryMissionControlResponse> QueryMissionControl(global::Routerrpc.QueryMissionControlRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///QueryProbability returns the current success probability estimate for a
+      ///given node pair and amount.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Routerrpc.QueryProbabilityResponse> QueryProbability(global::Routerrpc.QueryProbabilityRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///BuildRoute builds a fully specified route based on a list of hop public
+      ///keys. It retrieves the relevant channel policies from the graph in order to
+      ///calculate the correct fees and time locks.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Routerrpc.BuildRouteResponse> BuildRoute(global::Routerrpc.BuildRouteRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+    }
+
     /// <summary>Client for Router</summary>
     public partial class RouterClient : grpc::ClientBase<RouterClient>
     {
@@ -492,6 +607,37 @@ namespace Routerrpc {
       {
         return new RouterClient(configuration);
       }
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static grpc::ServerServiceDefinition BindService(RouterBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_SendPayment, serviceImpl.SendPayment)
+          .AddMethod(__Method_TrackPayment, serviceImpl.TrackPayment)
+          .AddMethod(__Method_EstimateRouteFee, serviceImpl.EstimateRouteFee)
+          .AddMethod(__Method_SendToRoute, serviceImpl.SendToRoute)
+          .AddMethod(__Method_ResetMissionControl, serviceImpl.ResetMissionControl)
+          .AddMethod(__Method_QueryMissionControl, serviceImpl.QueryMissionControl)
+          .AddMethod(__Method_QueryProbability, serviceImpl.QueryProbability)
+          .AddMethod(__Method_BuildRoute, serviceImpl.BuildRoute).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, RouterBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_SendPayment, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Routerrpc.SendPaymentRequest, global::Routerrpc.PaymentStatus>(serviceImpl.SendPayment));
+      serviceBinder.AddMethod(__Method_TrackPayment, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Routerrpc.TrackPaymentRequest, global::Routerrpc.PaymentStatus>(serviceImpl.TrackPayment));
+      serviceBinder.AddMethod(__Method_EstimateRouteFee, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Routerrpc.RouteFeeRequest, global::Routerrpc.RouteFeeResponse>(serviceImpl.EstimateRouteFee));
+      serviceBinder.AddMethod(__Method_SendToRoute, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Routerrpc.SendToRouteRequest, global::Routerrpc.SendToRouteResponse>(serviceImpl.SendToRoute));
+      serviceBinder.AddMethod(__Method_ResetMissionControl, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Routerrpc.ResetMissionControlRequest, global::Routerrpc.ResetMissionControlResponse>(serviceImpl.ResetMissionControl));
+      serviceBinder.AddMethod(__Method_QueryMissionControl, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Routerrpc.QueryMissionControlRequest, global::Routerrpc.QueryMissionControlResponse>(serviceImpl.QueryMissionControl));
+      serviceBinder.AddMethod(__Method_QueryProbability, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Routerrpc.QueryProbabilityRequest, global::Routerrpc.QueryProbabilityResponse>(serviceImpl.QueryProbability));
+      serviceBinder.AddMethod(__Method_BuildRoute, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Routerrpc.BuildRouteRequest, global::Routerrpc.BuildRouteResponse>(serviceImpl.BuildRoute));
     }
 
   }

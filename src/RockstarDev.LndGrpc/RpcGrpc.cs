@@ -59,6 +59,80 @@ namespace Lnrpc {
       get { return global::Lnrpc.RpcReflection.Descriptor.Services[0]; }
     }
 
+    /// <summary>Base class for server-side implementations of WalletUnlocker</summary>
+    [grpc::BindServiceMethod(typeof(WalletUnlocker), "BindService")]
+    public abstract partial class WalletUnlockerBase
+    {
+      /// <summary>
+      ///*
+      ///GenSeed is the first method that should be used to instantiate a new lnd
+      ///instance. This method allows a caller to generate a new aezeed cipher seed
+      ///given an optional passphrase. If provided, the passphrase will be necessary
+      ///to decrypt the cipherseed to expose the internal wallet seed.
+      ///
+      ///Once the cipherseed is obtained and verified by the user, the InitWallet
+      ///method should be used to commit the newly generated seed, and create the
+      ///wallet.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.GenSeedResponse> GenSeed(global::Lnrpc.GenSeedRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* 
+      ///InitWallet is used when lnd is starting up for the first time to fully
+      ///initialize the daemon and its internal wallet. At the very least a wallet
+      ///password must be provided. This will be used to encrypt sensitive material
+      ///on disk.
+      ///
+      ///In the case of a recovery scenario, the user can also specify their aezeed
+      ///mnemonic and passphrase. If set, then the daemon will use this prior state
+      ///to initialize its internal wallet.
+      ///
+      ///Alternatively, this can be used along with the GenSeed RPC to obtain a
+      ///seed, then present it to the user. Once it has been verified by the user,
+      ///the seed can be fed into this RPC in order to commit the new wallet.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.InitWalletResponse> InitWallet(global::Lnrpc.InitWalletRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `unlock`
+      ///UnlockWallet is used at startup of lnd to provide a password to unlock
+      ///the wallet database.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.UnlockWalletResponse> UnlockWallet(global::Lnrpc.UnlockWalletRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `changepassword`
+      ///ChangePassword changes the password of the encrypted wallet. This will
+      ///automatically unlock the wallet database if successful.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ChangePasswordResponse> ChangePassword(global::Lnrpc.ChangePasswordRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+    }
+
     /// <summary>Client for WalletUnlocker</summary>
     public partial class WalletUnlockerClient : grpc::ClientBase<WalletUnlockerClient>
     {
@@ -359,6 +433,29 @@ namespace Lnrpc {
       {
         return new WalletUnlockerClient(configuration);
       }
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static grpc::ServerServiceDefinition BindService(WalletUnlockerBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_GenSeed, serviceImpl.GenSeed)
+          .AddMethod(__Method_InitWallet, serviceImpl.InitWallet)
+          .AddMethod(__Method_UnlockWallet, serviceImpl.UnlockWallet)
+          .AddMethod(__Method_ChangePassword, serviceImpl.ChangePassword).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, WalletUnlockerBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_GenSeed, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.GenSeedRequest, global::Lnrpc.GenSeedResponse>(serviceImpl.GenSeed));
+      serviceBinder.AddMethod(__Method_InitWallet, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.InitWalletRequest, global::Lnrpc.InitWalletResponse>(serviceImpl.InitWallet));
+      serviceBinder.AddMethod(__Method_UnlockWallet, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.UnlockWalletRequest, global::Lnrpc.UnlockWalletResponse>(serviceImpl.UnlockWallet));
+      serviceBinder.AddMethod(__Method_ChangePassword, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ChangePasswordRequest, global::Lnrpc.ChangePasswordResponse>(serviceImpl.ChangePassword));
     }
 
   }
@@ -846,6 +943,823 @@ namespace Lnrpc {
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
       get { return global::Lnrpc.RpcReflection.Descriptor.Services[1]; }
+    }
+
+    /// <summary>Base class for server-side implementations of Lightning</summary>
+    [grpc::BindServiceMethod(typeof(Lightning), "BindService")]
+    public abstract partial class LightningBase
+    {
+      /// <summary>
+      ///* lncli: `walletbalance`
+      ///WalletBalance returns total unspent outputs(confirmed and unconfirmed), all
+      ///confirmed unspent outputs and all unconfirmed unspent outputs under control
+      ///of the wallet.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.WalletBalanceResponse> WalletBalance(global::Lnrpc.WalletBalanceRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `channelbalance`
+      ///ChannelBalance returns the total funds available across all open channels
+      ///in satoshis.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ChannelBalanceResponse> ChannelBalance(global::Lnrpc.ChannelBalanceRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `listchaintxns`
+      ///GetTransactions returns a list describing all the known transactions
+      ///relevant to the wallet.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.TransactionDetails> GetTransactions(global::Lnrpc.GetTransactionsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `estimatefee`
+      ///EstimateFee asks the chain backend to estimate the fee rate and total fees
+      ///for a transaction that pays to multiple specified outputs.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.EstimateFeeResponse> EstimateFee(global::Lnrpc.EstimateFeeRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `sendcoins`
+      ///SendCoins executes a request to send coins to a particular address. Unlike
+      ///SendMany, this RPC call only allows creating a single output at a time. If
+      ///neither target_conf, or sat_per_byte are set, then the internal wallet will
+      ///consult its fee model to determine a fee for the default confirmation
+      ///target.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.SendCoinsResponse> SendCoins(global::Lnrpc.SendCoinsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `listunspent`
+      ///ListUnspent returns a list of all utxos spendable by the wallet with a
+      ///number of confirmations between the specified minimum and maximum.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ListUnspentResponse> ListUnspent(global::Lnrpc.ListUnspentRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SubscribeTransactions creates a uni-directional stream from the server to
+      ///the client in which any newly discovered transactions relevant to the
+      ///wallet are sent over.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SubscribeTransactions(global::Lnrpc.GetTransactionsRequest request, grpc::IServerStreamWriter<global::Lnrpc.Transaction> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `sendmany`
+      ///SendMany handles a request for a transaction that creates multiple specified
+      ///outputs in parallel. If neither target_conf, or sat_per_byte are set, then
+      ///the internal wallet will consult its fee model to determine a fee for the
+      ///default confirmation target.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.SendManyResponse> SendMany(global::Lnrpc.SendManyRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `newaddress`
+      ///NewAddress creates a new address under control of the local wallet.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.NewAddressResponse> NewAddress(global::Lnrpc.NewAddressRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `signmessage`
+      ///SignMessage signs a message with this node's private key. The returned
+      ///signature string is `zbase32` encoded and pubkey recoverable, meaning that
+      ///only the message digest and signature are needed for verification.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.SignMessageResponse> SignMessage(global::Lnrpc.SignMessageRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `verifymessage`
+      ///VerifyMessage verifies a signature over a msg. The signature must be
+      ///zbase32 encoded and signed by an active node in the resident node's
+      ///channel database. In addition to returning the validity of the signature,
+      ///VerifyMessage also returns the recovered pubkey from the signature.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.VerifyMessageResponse> VerifyMessage(global::Lnrpc.VerifyMessageRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `connect`
+      ///ConnectPeer attempts to establish a connection to a remote peer. This is at
+      ///the networking level, and is used for communication between nodes. This is
+      ///distinct from establishing a channel with a peer.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ConnectPeerResponse> ConnectPeer(global::Lnrpc.ConnectPeerRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `disconnect`
+      ///DisconnectPeer attempts to disconnect one peer from another identified by a
+      ///given pubKey. In the case that we currently have a pending or active channel
+      ///with the target peer, then this action will be not be allowed.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.DisconnectPeerResponse> DisconnectPeer(global::Lnrpc.DisconnectPeerRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `listpeers`
+      ///ListPeers returns a verbose listing of all currently active peers.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ListPeersResponse> ListPeers(global::Lnrpc.ListPeersRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SubscribePeerEvents creates a uni-directional stream from the server to
+      ///the client in which any events relevant to the state of peers are sent
+      ///over. Events include peers going online and offline.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SubscribePeerEvents(global::Lnrpc.PeerEventSubscription request, grpc::IServerStreamWriter<global::Lnrpc.PeerEvent> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `getinfo`
+      ///GetInfo returns general information concerning the lightning node including
+      ///it's identity pubkey, alias, the chains it is connected to, and information
+      ///concerning the number of open+pending channels.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.GetInfoResponse> GetInfo(global::Lnrpc.GetInfoRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `pendingchannels`
+      ///PendingChannels returns a list of all the channels that are currently
+      ///considered "pending". A channel is pending if it has finished the funding
+      ///workflow and is waiting for confirmations for the funding txn, or is in the
+      ///process of closure, either initiated cooperatively or non-cooperatively.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.PendingChannelsResponse> PendingChannels(global::Lnrpc.PendingChannelsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `listchannels`
+      ///ListChannels returns a description of all the open channels that this node
+      ///is a participant in.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ListChannelsResponse> ListChannels(global::Lnrpc.ListChannelsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SubscribeChannelEvents creates a uni-directional stream from the server to
+      ///the client in which any updates relevant to the state of the channels are
+      ///sent over. Events include new active channels, inactive channels, and closed
+      ///channels.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SubscribeChannelEvents(global::Lnrpc.ChannelEventSubscription request, grpc::IServerStreamWriter<global::Lnrpc.ChannelEventUpdate> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `closedchannels`
+      ///ClosedChannels returns a description of all the closed channels that
+      ///this node was a participant in.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ClosedChannelsResponse> ClosedChannels(global::Lnrpc.ClosedChannelsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///OpenChannelSync is a synchronous version of the OpenChannel RPC call. This
+      ///call is meant to be consumed by clients to the REST proxy. As with all
+      ///other sync calls, all byte slices are intended to be populated as hex
+      ///encoded strings.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ChannelPoint> OpenChannelSync(global::Lnrpc.OpenChannelRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `openchannel`
+      ///OpenChannel attempts to open a singly funded channel specified in the
+      ///request to a remote peer. Users are able to specify a target number of
+      ///blocks that the funding transaction should be confirmed in, or a manual fee
+      ///rate to us for the funding transaction. If neither are specified, then a
+      ///lax block confirmation target is used. Each OpenStatusUpdate will return
+      ///the pending channel ID of the in-progress channel. Depending on the
+      ///arguments specified in the OpenChannelRequest, this pending channel ID can
+      ///then be used to manually progress the channel funding flow.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task OpenChannel(global::Lnrpc.OpenChannelRequest request, grpc::IServerStreamWriter<global::Lnrpc.OpenStatusUpdate> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///FundingStateStep is an advanced funding related call that allows the caller
+      ///to either execute some preparatory steps for a funding workflow, or
+      ///manually progress a funding workflow. The primary way a funding flow is
+      ///identified is via its pending channel ID. As an example, this method can be
+      ///used to specify that we're expecting a funding flow for a particular
+      ///pending channel ID, for which we need to use specific parameters.
+      ///Alternatively, this can be used to interactively drive PSBT signing for
+      ///funding for partially complete funding transactions.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.FundingStateStepResp> FundingStateStep(global::Lnrpc.FundingTransitionMsg request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///ChannelAcceptor dispatches a bi-directional streaming RPC in which
+      ///OpenChannel requests are sent to the client and the client responds with
+      ///a boolean that tells LND whether or not to accept the channel. This allows
+      ///node operators to specify their own criteria for accepting inbound channels
+      ///through a single persistent connection.
+      /// </summary>
+      /// <param name="requestStream">Used for reading requests from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task ChannelAcceptor(grpc::IAsyncStreamReader<global::Lnrpc.ChannelAcceptResponse> requestStream, grpc::IServerStreamWriter<global::Lnrpc.ChannelAcceptRequest> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `closechannel`
+      ///CloseChannel attempts to close an active channel identified by its channel
+      ///outpoint (ChannelPoint). The actions of this method can additionally be
+      ///augmented to attempt a force close after a timeout period in the case of an
+      ///inactive peer. If a non-force close (cooperative closure) is requested,
+      ///then the user can specify either a target number of blocks until the
+      ///closure transaction is confirmed, or a manual fee rate. If neither are
+      ///specified, then a default lax, block confirmation target is used.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task CloseChannel(global::Lnrpc.CloseChannelRequest request, grpc::IServerStreamWriter<global::Lnrpc.CloseStatusUpdate> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `abandonchannel`
+      ///AbandonChannel removes all channel state from the database except for a
+      ///close summary. This method can be used to get rid of permanently unusable
+      ///channels due to bugs fixed in newer versions of lnd. Only available
+      ///when in debug builds of lnd.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.AbandonChannelResponse> AbandonChannel(global::Lnrpc.AbandonChannelRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `sendpayment`
+      ///SendPayment dispatches a bi-directional streaming RPC for sending payments
+      ///through the Lightning Network. A single RPC invocation creates a persistent
+      ///bi-directional stream allowing clients to rapidly send payments through the
+      ///Lightning Network with a single persistent connection.
+      /// </summary>
+      /// <param name="requestStream">Used for reading requests from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SendPayment(grpc::IAsyncStreamReader<global::Lnrpc.SendRequest> requestStream, grpc::IServerStreamWriter<global::Lnrpc.SendResponse> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SendPaymentSync is the synchronous non-streaming version of SendPayment.
+      ///This RPC is intended to be consumed by clients of the REST proxy.
+      ///Additionally, this RPC expects the destination's public key and the payment
+      ///hash (if any) to be encoded as hex strings.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.SendResponse> SendPaymentSync(global::Lnrpc.SendRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `sendtoroute`
+      ///SendToRoute is a bi-directional streaming RPC for sending payment through
+      ///the Lightning Network. This method differs from SendPayment in that it
+      ///allows users to specify a full route manually. This can be used for things
+      ///like rebalancing, and atomic swaps.
+      /// </summary>
+      /// <param name="requestStream">Used for reading requests from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SendToRoute(grpc::IAsyncStreamReader<global::Lnrpc.SendToRouteRequest> requestStream, grpc::IServerStreamWriter<global::Lnrpc.SendResponse> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SendToRouteSync is a synchronous version of SendToRoute. It Will block
+      ///until the payment either fails or succeeds.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.SendResponse> SendToRouteSync(global::Lnrpc.SendToRouteRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `addinvoice`
+      ///AddInvoice attempts to add a new invoice to the invoice database. Any
+      ///duplicated invoices are rejected, therefore all invoices *must* have a
+      ///unique payment preimage.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.AddInvoiceResponse> AddInvoice(global::Lnrpc.Invoice request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `listinvoices`
+      ///ListInvoices returns a list of all the invoices currently stored within the
+      ///database. Any active debug invoices are ignored. It has full support for
+      ///paginated responses, allowing users to query for specific invoices through
+      ///their add_index. This can be done by using either the first_index_offset or
+      ///last_index_offset fields included in the response as the index_offset of the
+      ///next request. By default, the first 100 invoices created will be returned.
+      ///Backwards pagination is also supported through the Reversed flag.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ListInvoiceResponse> ListInvoices(global::Lnrpc.ListInvoiceRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `lookupinvoice`
+      ///LookupInvoice attempts to look up an invoice according to its payment hash.
+      ///The passed payment hash *must* be exactly 32 bytes, if not, an error is
+      ///returned.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.Invoice> LookupInvoice(global::Lnrpc.PaymentHash request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SubscribeInvoices returns a uni-directional stream (server -> client) for
+      ///notifying the client of newly added/settled invoices. The caller can
+      ///optionally specify the add_index and/or the settle_index. If the add_index
+      ///is specified, then we'll first start by sending add invoice events for all
+      ///invoices with an add_index greater than the specified value. If the
+      ///settle_index is specified, the next, we'll send out all settle events for
+      ///invoices with a settle_index greater than the specified value. One or both
+      ///of these fields can be set. If no fields are set, then we'll only send out
+      ///the latest add/settle events.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SubscribeInvoices(global::Lnrpc.InvoiceSubscription request, grpc::IServerStreamWriter<global::Lnrpc.Invoice> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `decodepayreq`
+      ///DecodePayReq takes an encoded payment request string and attempts to decode
+      ///it, returning a full description of the conditions encoded within the
+      ///payment request.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.PayReq> DecodePayReq(global::Lnrpc.PayReqString request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `listpayments`
+      ///ListPayments returns a list of all outgoing payments.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ListPaymentsResponse> ListPayments(global::Lnrpc.ListPaymentsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///DeleteAllPayments deletes all outgoing payments from DB.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.DeleteAllPaymentsResponse> DeleteAllPayments(global::Lnrpc.DeleteAllPaymentsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `describegraph`
+      ///DescribeGraph returns a description of the latest graph state from the
+      ///point of view of the node. The graph information is partitioned into two
+      ///components: all the nodes/vertexes, and all the edges that connect the
+      ///vertexes themselves. As this is a directed graph, the edges also contain
+      ///the node directional specific routing policy which includes: the time lock
+      ///delta, fee information, etc.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ChannelGraph> DescribeGraph(global::Lnrpc.ChannelGraphRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `getchaninfo`
+      ///GetChanInfo returns the latest authenticated network announcement for the
+      ///given channel identified by its channel ID: an 8-byte integer which
+      ///uniquely identifies the location of transaction's funding output within the
+      ///blockchain.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ChannelEdge> GetChanInfo(global::Lnrpc.ChanInfoRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `getnodeinfo`
+      ///GetNodeInfo returns the latest advertised, aggregated, and authenticated
+      ///channel information for the specified node identified by its public key.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.NodeInfo> GetNodeInfo(global::Lnrpc.NodeInfoRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `queryroutes`
+      ///QueryRoutes attempts to query the daemon's Channel Router for a possible
+      ///route to a target destination capable of carrying a specific amount of
+      ///satoshis. The returned route contains the full details required to craft and
+      ///send an HTLC, also including the necessary information that should be
+      ///present within the Sphinx packet encapsulated within the HTLC.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.QueryRoutesResponse> QueryRoutes(global::Lnrpc.QueryRoutesRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `getnetworkinfo`
+      ///GetNetworkInfo returns some basic stats about the known channel graph from
+      ///the point of view of the node.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.NetworkInfo> GetNetworkInfo(global::Lnrpc.NetworkInfoRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `stop`
+      ///StopDaemon will send a shutdown request to the interrupt handler, triggering
+      ///a graceful shutdown of the daemon.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.StopResponse> StopDaemon(global::Lnrpc.StopRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SubscribeChannelGraph launches a streaming RPC that allows the caller to
+      ///receive notifications upon any changes to the channel graph topology from
+      ///the point of view of the responding node. Events notified include: new
+      ///nodes coming online, nodes updating their authenticated attributes, new
+      ///channels being advertised, updates in the routing policy for a directional
+      ///channel edge, and when channels are closed on-chain.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SubscribeChannelGraph(global::Lnrpc.GraphTopologySubscription request, grpc::IServerStreamWriter<global::Lnrpc.GraphTopologyUpdate> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `debuglevel`
+      ///DebugLevel allows a caller to programmatically set the logging verbosity of
+      ///lnd. The logging can be targeted according to a coarse daemon-wide logging
+      ///level, or in a granular fashion to specify the logging for a target
+      ///sub-system.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.DebugLevelResponse> DebugLevel(global::Lnrpc.DebugLevelRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `feereport`
+      ///FeeReport allows the caller to obtain a report detailing the current fee
+      ///schedule enforced by the node globally for each channel.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.FeeReportResponse> FeeReport(global::Lnrpc.FeeReportRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `updatechanpolicy`
+      ///UpdateChannelPolicy allows the caller to update the fee schedule and
+      ///channel policies for all channels globally, or a particular channel.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.PolicyUpdateResponse> UpdateChannelPolicy(global::Lnrpc.PolicyUpdateRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `fwdinghistory`
+      ///ForwardingHistory allows the caller to query the htlcswitch for a record of
+      ///all HTLCs forwarded within the target time range, and integer offset
+      ///within that time range. If no time-range is specified, then the first chunk
+      ///of the past 24 hrs of forwarding history are returned.
+      ///
+      ///A list of forwarding events are returned. The size of each forwarding event
+      ///is 40 bytes, and the max message size able to be returned in gRPC is 4 MiB.
+      ///As a result each message can only contain 50k entries. Each response has
+      ///the index offset of the last entry. The index offset can be provided to the
+      ///request to allow the caller to skip a series of records.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ForwardingHistoryResponse> ForwardingHistory(global::Lnrpc.ForwardingHistoryRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `exportchanbackup`
+      ///ExportChannelBackup attempts to return an encrypted static channel backup
+      ///for the target channel identified by it channel point. The backup is
+      ///encrypted with a key generated from the aezeed seed of the user. The
+      ///returned backup can either be restored using the RestoreChannelBackup
+      ///method once lnd is running, or via the InitWallet and UnlockWallet methods
+      ///from the WalletUnlocker service.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ChannelBackup> ExportChannelBackup(global::Lnrpc.ExportChannelBackupRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///ExportAllChannelBackups returns static channel backups for all existing
+      ///channels known to lnd. A set of regular singular static channel backups for
+      ///each channel are returned. Additionally, a multi-channel backup is returned
+      ///as well, which contains a single encrypted blob containing the backups of
+      ///each channel.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.ChanBackupSnapshot> ExportAllChannelBackups(global::Lnrpc.ChanBackupExportRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///VerifyChanBackup allows a caller to verify the integrity of a channel backup
+      ///snapshot. This method will accept either a packed Single or a packed Multi.
+      ///Specifying both will result in an error.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.VerifyChanBackupResponse> VerifyChanBackup(global::Lnrpc.ChanBackupSnapshot request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `restorechanbackup`
+      ///RestoreChannelBackups accepts a set of singular channel backups, or a
+      ///single encrypted multi-chan backup and attempts to recover any funds
+      ///remaining within the channel. If we are able to unpack the backup, then the
+      ///new channel will be shown under listchannels, as well as pending channels.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.RestoreBackupResponse> RestoreChannelBackups(global::Lnrpc.RestoreChanBackupRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SubscribeChannelBackups allows a client to sub-subscribe to the most up to
+      ///date information concerning the state of all channel backups. Each time a
+      ///new channel is added, we return the new set of channels, along with a
+      ///multi-chan backup containing the backup info for all channels. Each time a
+      ///channel is closed, we send a new update, which contains new new chan back
+      ///ups, but the updated set of encrypted multi-chan backups with the closed
+      ///channel(s) removed.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SubscribeChannelBackups(global::Lnrpc.ChannelBackupSubscription request, grpc::IServerStreamWriter<global::Lnrpc.ChanBackupSnapshot> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///* lncli: `bakemacaroon`
+      ///BakeMacaroon allows the creation of a new macaroon with custom read and
+      ///write permissions. No first-party caveats are added since this can be done
+      ///offline.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Lnrpc.BakeMacaroonResponse> BakeMacaroon(global::Lnrpc.BakeMacaroonRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
     }
 
     /// <summary>Client for Lightning</summary>
@@ -3708,6 +4622,129 @@ namespace Lnrpc {
       {
         return new LightningClient(configuration);
       }
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static grpc::ServerServiceDefinition BindService(LightningBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_WalletBalance, serviceImpl.WalletBalance)
+          .AddMethod(__Method_ChannelBalance, serviceImpl.ChannelBalance)
+          .AddMethod(__Method_GetTransactions, serviceImpl.GetTransactions)
+          .AddMethod(__Method_EstimateFee, serviceImpl.EstimateFee)
+          .AddMethod(__Method_SendCoins, serviceImpl.SendCoins)
+          .AddMethod(__Method_ListUnspent, serviceImpl.ListUnspent)
+          .AddMethod(__Method_SubscribeTransactions, serviceImpl.SubscribeTransactions)
+          .AddMethod(__Method_SendMany, serviceImpl.SendMany)
+          .AddMethod(__Method_NewAddress, serviceImpl.NewAddress)
+          .AddMethod(__Method_SignMessage, serviceImpl.SignMessage)
+          .AddMethod(__Method_VerifyMessage, serviceImpl.VerifyMessage)
+          .AddMethod(__Method_ConnectPeer, serviceImpl.ConnectPeer)
+          .AddMethod(__Method_DisconnectPeer, serviceImpl.DisconnectPeer)
+          .AddMethod(__Method_ListPeers, serviceImpl.ListPeers)
+          .AddMethod(__Method_SubscribePeerEvents, serviceImpl.SubscribePeerEvents)
+          .AddMethod(__Method_GetInfo, serviceImpl.GetInfo)
+          .AddMethod(__Method_PendingChannels, serviceImpl.PendingChannels)
+          .AddMethod(__Method_ListChannels, serviceImpl.ListChannels)
+          .AddMethod(__Method_SubscribeChannelEvents, serviceImpl.SubscribeChannelEvents)
+          .AddMethod(__Method_ClosedChannels, serviceImpl.ClosedChannels)
+          .AddMethod(__Method_OpenChannelSync, serviceImpl.OpenChannelSync)
+          .AddMethod(__Method_OpenChannel, serviceImpl.OpenChannel)
+          .AddMethod(__Method_FundingStateStep, serviceImpl.FundingStateStep)
+          .AddMethod(__Method_ChannelAcceptor, serviceImpl.ChannelAcceptor)
+          .AddMethod(__Method_CloseChannel, serviceImpl.CloseChannel)
+          .AddMethod(__Method_AbandonChannel, serviceImpl.AbandonChannel)
+          .AddMethod(__Method_SendPayment, serviceImpl.SendPayment)
+          .AddMethod(__Method_SendPaymentSync, serviceImpl.SendPaymentSync)
+          .AddMethod(__Method_SendToRoute, serviceImpl.SendToRoute)
+          .AddMethod(__Method_SendToRouteSync, serviceImpl.SendToRouteSync)
+          .AddMethod(__Method_AddInvoice, serviceImpl.AddInvoice)
+          .AddMethod(__Method_ListInvoices, serviceImpl.ListInvoices)
+          .AddMethod(__Method_LookupInvoice, serviceImpl.LookupInvoice)
+          .AddMethod(__Method_SubscribeInvoices, serviceImpl.SubscribeInvoices)
+          .AddMethod(__Method_DecodePayReq, serviceImpl.DecodePayReq)
+          .AddMethod(__Method_ListPayments, serviceImpl.ListPayments)
+          .AddMethod(__Method_DeleteAllPayments, serviceImpl.DeleteAllPayments)
+          .AddMethod(__Method_DescribeGraph, serviceImpl.DescribeGraph)
+          .AddMethod(__Method_GetChanInfo, serviceImpl.GetChanInfo)
+          .AddMethod(__Method_GetNodeInfo, serviceImpl.GetNodeInfo)
+          .AddMethod(__Method_QueryRoutes, serviceImpl.QueryRoutes)
+          .AddMethod(__Method_GetNetworkInfo, serviceImpl.GetNetworkInfo)
+          .AddMethod(__Method_StopDaemon, serviceImpl.StopDaemon)
+          .AddMethod(__Method_SubscribeChannelGraph, serviceImpl.SubscribeChannelGraph)
+          .AddMethod(__Method_DebugLevel, serviceImpl.DebugLevel)
+          .AddMethod(__Method_FeeReport, serviceImpl.FeeReport)
+          .AddMethod(__Method_UpdateChannelPolicy, serviceImpl.UpdateChannelPolicy)
+          .AddMethod(__Method_ForwardingHistory, serviceImpl.ForwardingHistory)
+          .AddMethod(__Method_ExportChannelBackup, serviceImpl.ExportChannelBackup)
+          .AddMethod(__Method_ExportAllChannelBackups, serviceImpl.ExportAllChannelBackups)
+          .AddMethod(__Method_VerifyChanBackup, serviceImpl.VerifyChanBackup)
+          .AddMethod(__Method_RestoreChannelBackups, serviceImpl.RestoreChannelBackups)
+          .AddMethod(__Method_SubscribeChannelBackups, serviceImpl.SubscribeChannelBackups)
+          .AddMethod(__Method_BakeMacaroon, serviceImpl.BakeMacaroon).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, LightningBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_WalletBalance, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.WalletBalanceRequest, global::Lnrpc.WalletBalanceResponse>(serviceImpl.WalletBalance));
+      serviceBinder.AddMethod(__Method_ChannelBalance, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ChannelBalanceRequest, global::Lnrpc.ChannelBalanceResponse>(serviceImpl.ChannelBalance));
+      serviceBinder.AddMethod(__Method_GetTransactions, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.GetTransactionsRequest, global::Lnrpc.TransactionDetails>(serviceImpl.GetTransactions));
+      serviceBinder.AddMethod(__Method_EstimateFee, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.EstimateFeeRequest, global::Lnrpc.EstimateFeeResponse>(serviceImpl.EstimateFee));
+      serviceBinder.AddMethod(__Method_SendCoins, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.SendCoinsRequest, global::Lnrpc.SendCoinsResponse>(serviceImpl.SendCoins));
+      serviceBinder.AddMethod(__Method_ListUnspent, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ListUnspentRequest, global::Lnrpc.ListUnspentResponse>(serviceImpl.ListUnspent));
+      serviceBinder.AddMethod(__Method_SubscribeTransactions, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.GetTransactionsRequest, global::Lnrpc.Transaction>(serviceImpl.SubscribeTransactions));
+      serviceBinder.AddMethod(__Method_SendMany, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.SendManyRequest, global::Lnrpc.SendManyResponse>(serviceImpl.SendMany));
+      serviceBinder.AddMethod(__Method_NewAddress, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.NewAddressRequest, global::Lnrpc.NewAddressResponse>(serviceImpl.NewAddress));
+      serviceBinder.AddMethod(__Method_SignMessage, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.SignMessageRequest, global::Lnrpc.SignMessageResponse>(serviceImpl.SignMessage));
+      serviceBinder.AddMethod(__Method_VerifyMessage, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.VerifyMessageRequest, global::Lnrpc.VerifyMessageResponse>(serviceImpl.VerifyMessage));
+      serviceBinder.AddMethod(__Method_ConnectPeer, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ConnectPeerRequest, global::Lnrpc.ConnectPeerResponse>(serviceImpl.ConnectPeer));
+      serviceBinder.AddMethod(__Method_DisconnectPeer, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.DisconnectPeerRequest, global::Lnrpc.DisconnectPeerResponse>(serviceImpl.DisconnectPeer));
+      serviceBinder.AddMethod(__Method_ListPeers, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ListPeersRequest, global::Lnrpc.ListPeersResponse>(serviceImpl.ListPeers));
+      serviceBinder.AddMethod(__Method_SubscribePeerEvents, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.PeerEventSubscription, global::Lnrpc.PeerEvent>(serviceImpl.SubscribePeerEvents));
+      serviceBinder.AddMethod(__Method_GetInfo, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.GetInfoRequest, global::Lnrpc.GetInfoResponse>(serviceImpl.GetInfo));
+      serviceBinder.AddMethod(__Method_PendingChannels, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.PendingChannelsRequest, global::Lnrpc.PendingChannelsResponse>(serviceImpl.PendingChannels));
+      serviceBinder.AddMethod(__Method_ListChannels, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ListChannelsRequest, global::Lnrpc.ListChannelsResponse>(serviceImpl.ListChannels));
+      serviceBinder.AddMethod(__Method_SubscribeChannelEvents, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.ChannelEventSubscription, global::Lnrpc.ChannelEventUpdate>(serviceImpl.SubscribeChannelEvents));
+      serviceBinder.AddMethod(__Method_ClosedChannels, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ClosedChannelsRequest, global::Lnrpc.ClosedChannelsResponse>(serviceImpl.ClosedChannels));
+      serviceBinder.AddMethod(__Method_OpenChannelSync, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.OpenChannelRequest, global::Lnrpc.ChannelPoint>(serviceImpl.OpenChannelSync));
+      serviceBinder.AddMethod(__Method_OpenChannel, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.OpenChannelRequest, global::Lnrpc.OpenStatusUpdate>(serviceImpl.OpenChannel));
+      serviceBinder.AddMethod(__Method_FundingStateStep, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.FundingTransitionMsg, global::Lnrpc.FundingStateStepResp>(serviceImpl.FundingStateStep));
+      serviceBinder.AddMethod(__Method_ChannelAcceptor, serviceImpl == null ? null : new grpc::DuplexStreamingServerMethod<global::Lnrpc.ChannelAcceptResponse, global::Lnrpc.ChannelAcceptRequest>(serviceImpl.ChannelAcceptor));
+      serviceBinder.AddMethod(__Method_CloseChannel, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.CloseChannelRequest, global::Lnrpc.CloseStatusUpdate>(serviceImpl.CloseChannel));
+      serviceBinder.AddMethod(__Method_AbandonChannel, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.AbandonChannelRequest, global::Lnrpc.AbandonChannelResponse>(serviceImpl.AbandonChannel));
+      serviceBinder.AddMethod(__Method_SendPayment, serviceImpl == null ? null : new grpc::DuplexStreamingServerMethod<global::Lnrpc.SendRequest, global::Lnrpc.SendResponse>(serviceImpl.SendPayment));
+      serviceBinder.AddMethod(__Method_SendPaymentSync, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.SendRequest, global::Lnrpc.SendResponse>(serviceImpl.SendPaymentSync));
+      serviceBinder.AddMethod(__Method_SendToRoute, serviceImpl == null ? null : new grpc::DuplexStreamingServerMethod<global::Lnrpc.SendToRouteRequest, global::Lnrpc.SendResponse>(serviceImpl.SendToRoute));
+      serviceBinder.AddMethod(__Method_SendToRouteSync, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.SendToRouteRequest, global::Lnrpc.SendResponse>(serviceImpl.SendToRouteSync));
+      serviceBinder.AddMethod(__Method_AddInvoice, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.Invoice, global::Lnrpc.AddInvoiceResponse>(serviceImpl.AddInvoice));
+      serviceBinder.AddMethod(__Method_ListInvoices, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ListInvoiceRequest, global::Lnrpc.ListInvoiceResponse>(serviceImpl.ListInvoices));
+      serviceBinder.AddMethod(__Method_LookupInvoice, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.PaymentHash, global::Lnrpc.Invoice>(serviceImpl.LookupInvoice));
+      serviceBinder.AddMethod(__Method_SubscribeInvoices, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.InvoiceSubscription, global::Lnrpc.Invoice>(serviceImpl.SubscribeInvoices));
+      serviceBinder.AddMethod(__Method_DecodePayReq, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.PayReqString, global::Lnrpc.PayReq>(serviceImpl.DecodePayReq));
+      serviceBinder.AddMethod(__Method_ListPayments, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ListPaymentsRequest, global::Lnrpc.ListPaymentsResponse>(serviceImpl.ListPayments));
+      serviceBinder.AddMethod(__Method_DeleteAllPayments, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.DeleteAllPaymentsRequest, global::Lnrpc.DeleteAllPaymentsResponse>(serviceImpl.DeleteAllPayments));
+      serviceBinder.AddMethod(__Method_DescribeGraph, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ChannelGraphRequest, global::Lnrpc.ChannelGraph>(serviceImpl.DescribeGraph));
+      serviceBinder.AddMethod(__Method_GetChanInfo, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ChanInfoRequest, global::Lnrpc.ChannelEdge>(serviceImpl.GetChanInfo));
+      serviceBinder.AddMethod(__Method_GetNodeInfo, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.NodeInfoRequest, global::Lnrpc.NodeInfo>(serviceImpl.GetNodeInfo));
+      serviceBinder.AddMethod(__Method_QueryRoutes, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.QueryRoutesRequest, global::Lnrpc.QueryRoutesResponse>(serviceImpl.QueryRoutes));
+      serviceBinder.AddMethod(__Method_GetNetworkInfo, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.NetworkInfoRequest, global::Lnrpc.NetworkInfo>(serviceImpl.GetNetworkInfo));
+      serviceBinder.AddMethod(__Method_StopDaemon, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.StopRequest, global::Lnrpc.StopResponse>(serviceImpl.StopDaemon));
+      serviceBinder.AddMethod(__Method_SubscribeChannelGraph, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.GraphTopologySubscription, global::Lnrpc.GraphTopologyUpdate>(serviceImpl.SubscribeChannelGraph));
+      serviceBinder.AddMethod(__Method_DebugLevel, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.DebugLevelRequest, global::Lnrpc.DebugLevelResponse>(serviceImpl.DebugLevel));
+      serviceBinder.AddMethod(__Method_FeeReport, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.FeeReportRequest, global::Lnrpc.FeeReportResponse>(serviceImpl.FeeReport));
+      serviceBinder.AddMethod(__Method_UpdateChannelPolicy, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.PolicyUpdateRequest, global::Lnrpc.PolicyUpdateResponse>(serviceImpl.UpdateChannelPolicy));
+      serviceBinder.AddMethod(__Method_ForwardingHistory, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ForwardingHistoryRequest, global::Lnrpc.ForwardingHistoryResponse>(serviceImpl.ForwardingHistory));
+      serviceBinder.AddMethod(__Method_ExportChannelBackup, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ExportChannelBackupRequest, global::Lnrpc.ChannelBackup>(serviceImpl.ExportChannelBackup));
+      serviceBinder.AddMethod(__Method_ExportAllChannelBackups, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ChanBackupExportRequest, global::Lnrpc.ChanBackupSnapshot>(serviceImpl.ExportAllChannelBackups));
+      serviceBinder.AddMethod(__Method_VerifyChanBackup, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.ChanBackupSnapshot, global::Lnrpc.VerifyChanBackupResponse>(serviceImpl.VerifyChanBackup));
+      serviceBinder.AddMethod(__Method_RestoreChannelBackups, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.RestoreChanBackupRequest, global::Lnrpc.RestoreBackupResponse>(serviceImpl.RestoreChannelBackups));
+      serviceBinder.AddMethod(__Method_SubscribeChannelBackups, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Lnrpc.ChannelBackupSubscription, global::Lnrpc.ChanBackupSnapshot>(serviceImpl.SubscribeChannelBackups));
+      serviceBinder.AddMethod(__Method_BakeMacaroon, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Lnrpc.BakeMacaroonRequest, global::Lnrpc.BakeMacaroonResponse>(serviceImpl.BakeMacaroon));
     }
 
   }

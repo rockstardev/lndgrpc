@@ -59,6 +59,67 @@ namespace Invoicesrpc {
       get { return global::Invoicesrpc.InvoicesReflection.Descriptor.Services[0]; }
     }
 
+    /// <summary>Base class for server-side implementations of Invoices</summary>
+    [grpc::BindServiceMethod(typeof(Invoices), "BindService")]
+    public abstract partial class InvoicesBase
+    {
+      /// <summary>
+      ///*
+      ///SubscribeSingleInvoice returns a uni-directional stream (server -> client)
+      ///to notify the client of state transitions of the specified invoice.
+      ///Initially the current invoice state is always sent out.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task SubscribeSingleInvoice(global::Invoicesrpc.SubscribeSingleInvoiceRequest request, grpc::IServerStreamWriter<global::Lnrpc.Invoice> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///CancelInvoice cancels a currently open invoice. If the invoice is already 
+      ///canceled, this call will succeed. If the invoice is already settled, it will
+      ///fail.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Invoicesrpc.CancelInvoiceResp> CancelInvoice(global::Invoicesrpc.CancelInvoiceMsg request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///AddHoldInvoice creates a hold invoice. It ties the invoice to the hash
+      ///supplied in the request.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Invoicesrpc.AddHoldInvoiceResp> AddHoldInvoice(global::Invoicesrpc.AddHoldInvoiceRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///*
+      ///SettleInvoice settles an accepted invoice. If the invoice is already
+      ///settled, this call will succeed.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Invoicesrpc.SettleInvoiceResp> SettleInvoice(global::Invoicesrpc.SettleInvoiceMsg request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+    }
+
     /// <summary>Client for Invoices</summary>
     public partial class InvoicesClient : grpc::ClientBase<InvoicesClient>
     {
@@ -275,6 +336,29 @@ namespace Invoicesrpc {
       {
         return new InvoicesClient(configuration);
       }
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static grpc::ServerServiceDefinition BindService(InvoicesBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_SubscribeSingleInvoice, serviceImpl.SubscribeSingleInvoice)
+          .AddMethod(__Method_CancelInvoice, serviceImpl.CancelInvoice)
+          .AddMethod(__Method_AddHoldInvoice, serviceImpl.AddHoldInvoice)
+          .AddMethod(__Method_SettleInvoice, serviceImpl.SettleInvoice).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, InvoicesBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_SubscribeSingleInvoice, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Invoicesrpc.SubscribeSingleInvoiceRequest, global::Lnrpc.Invoice>(serviceImpl.SubscribeSingleInvoice));
+      serviceBinder.AddMethod(__Method_CancelInvoice, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Invoicesrpc.CancelInvoiceMsg, global::Invoicesrpc.CancelInvoiceResp>(serviceImpl.CancelInvoice));
+      serviceBinder.AddMethod(__Method_AddHoldInvoice, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Invoicesrpc.AddHoldInvoiceRequest, global::Invoicesrpc.AddHoldInvoiceResp>(serviceImpl.AddHoldInvoice));
+      serviceBinder.AddMethod(__Method_SettleInvoice, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Invoicesrpc.SettleInvoiceMsg, global::Invoicesrpc.SettleInvoiceResp>(serviceImpl.SettleInvoice));
     }
 
   }

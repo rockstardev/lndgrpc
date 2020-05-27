@@ -13,5 +13,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="*.proto" OutputDir="." CompileOutputs="false" />
+  </ItemGroup>
 
 </Project>

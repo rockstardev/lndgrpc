@@ -1,5 +1,1 @@
-:: Be sure to update path to nuget package depending on platform / username
-
-%USERPROFILE%/.nuget/packages/grpc.tools/2.27.0/tools/windows_x64/protoc.exe --csharp_out . --grpc_out . rpc.proto --plugin=protoc-gen-grpc=%USERPROFILE%/.nuget/packages/grpc.tools/2.27.0/tools/windows_x64/grpc_csharp_plugin.exe --grpc_opt=no_server
-%USERPROFILE%/.nuget/packages/grpc.tools/2.27.0/tools/windows_x64/protoc.exe --csharp_out . --grpc_out . router.proto --plugin=protoc-gen-grpc=%USERPROFILE%/.nuget/packages/grpc.tools/2.27.0/tools/windows_x64/grpc_csharp_plugin.exe --grpc_opt=no_server
-%USERPROFILE%/.nuget/packages/grpc.tools/2.27.0/tools/windows_x64/protoc.exe --csharp_out . --grpc_out . invoices.proto --plugin=protoc-gen-grpc=%USERPROFILE%/.nuget/packages/grpc.tools/2.27.0/tools/windows_x64/grpc_csharp_plugin.exe --grpc_opt=no_server
+dotnet build
